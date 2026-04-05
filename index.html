@@ -1,43 +1,916 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yahya Gaber Edriss | Landscape & Urban Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sage: #3a6b35;
+    --sage-light: #4a7c45;
+    --earth: #8b6914;
+    --earth-dark: #6b4f10;
+    --ink: #2e2b23;
+    --cream: #faf7ee;
+    --cream-dark: #f0ebe0;
+    --sand: #c8b89a;
+    --terracotta: #a0522d;
+    --mist: #e8f0e4;
+    --green-accent: #2d5a27;
+    --green-light: #5a8a52;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom Cursor */
+  .cursor { width: 8px; height: 8px; background: var(--terracotta); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; transition: transform 0.08s linear; transform: translate(-50%, -50%); will-change: transform; }
+  .cursor-ring { width: 32px; height: 32px; border: 1px solid var(--sage); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998; transition: width 0.22s, height 0.22s; transform: translate(-50%, -50%); will-change: transform, width, height; }
+  .cursor-ring.expanded { width: 56px; height: 56px; border-color: var(--terracotta); }
+
+  /* Nav */
+  nav { position: fixed; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 4rem; z-index: 100; mix-blend-mode: multiply; }
+  .nav-logo { font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.2em; color: var(--earth-dark); text-transform: uppercase; }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink); text-decoration: none; opacity: 0.6; transition: opacity 0.3s; }
+  .nav-links a:hover { opacity: 1; }
+
+  /* Hero */
+  .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; position: relative; overflow: hidden; }
+
+  .hero-left { display: flex; flex-direction: column; justify-content: flex-end; padding: 8rem 4rem 6rem; position: relative; z-index: 2; }
+
+  .hero-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: #3a6b35; margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards; }
+
+  .hero-name { font-family: 'Libre Baskerville', serif; font-size: clamp(3rem, 5.1vw, 5.95rem); font-weight: 400; line-height: 1; letter-spacing: -0.02em; margin-bottom: 0.5rem; opacity: 0; animation: fadeUp 0.9s ease 0.4s forwards; }
+  .hero-name em { font-style: italic; color: var(--earth-dark); }
+
+  .hero-title { font-family: 'Libre Baskerville', serif; font-size: clamp(1rem, 1.8vw, 1.4rem); font-weight: 300; font-style: italic; color: #3a6b35; margin-bottom: 3rem; opacity: 0; animation: fadeUp 0.9s ease 0.6s forwards; }
+
+  .hero-bio { font-size: 1.05rem; line-height: 1.9; color: var(--earth-dark); max-width: 420px; opacity: 0; animation: fadeUp 0.9s ease 0.8s forwards; }
+
+  .hero-scroll { position: absolute; bottom: 3rem; left: 4rem; font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage); display: flex; align-items: center; gap: 1rem; opacity: 0; animation: fadeUp 1s ease 1.2s forwards; }
+  .hero-scroll::before { content: ''; width: 40px; height: 1px; background: var(--sage); display: block; }
+
+  .hero-right { position: relative; overflow: hidden; }
+  .hero-right::before { content: ''; position: absolute; inset: 0; background: var(--mist); clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%); }
+
+  .hero-visual { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%); }
+
+  .botanical-svg { width: 70%; max-width: 400px; opacity: 0; animation: fadeIn 1.5s ease 1s forwards, float 8s ease-in-out 3s infinite; }
+  .leaf-path { stroke-dasharray: 600; stroke-dashoffset: 600; animation: drawLeaf 2.5s ease 1.5s forwards; }
+  .leaf-path-2 { stroke-dasharray: 400; stroke-dashoffset: 400; animation: drawLeaf 2s ease 2s forwards; }
+  .leaf-path-3 { stroke-dasharray: 300; stroke-dashoffset: 300; animation: drawLeaf 1.8s ease 2.3s forwards; }
+  .circle-anim { stroke-dasharray: 502; stroke-dashoffset: 502; animation: drawLeaf 2s ease 1.2s forwards; }
+  .grid-line { stroke-dasharray: 200; stroke-dashoffset: 200; animation: drawLeaf 1s ease 2.5s forwards; }
+
+  .stats-strip { position: absolute; bottom: 3rem; right: 4rem; display: flex; flex-direction: column; gap: 1.5rem; opacity: 0; animation: fadeIn 1s ease 1.5s forwards; }
+  .stat-item { text-align: right; }
+  .stat-number { font-family: 'Libre Baskerville', serif; font-size: 2.2rem; font-weight: 600; color: #2d5a27; line-height: 1; }
+  .stat-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage); }
+
+  /* Sections */
+  section { padding: 8rem 4rem; }
+
+  .section-tag { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: #a0522d; margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem; }
+  .section-tag::after { content: ''; flex: 1; height: 1px; background: var(--sand); max-width: 60px; }
+
+  .section-title { font-family: 'Libre Baskerville', serif; font-size: clamp(4.5rem, 4vw, 5.5rem); font-weight: 400; line-height: 1.1; margin-bottom: 1rem; }
+  .section-title em { font-style: italic; color: #3a6b35; }
+
+  /* About */
+  .about-section { background: var(--cream); display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+
+  .about-bio p { font-family: 'Source Sans 3', sans-serif; font-size: 1.05rem; line-height: 1.9; color: var(--earth-dark); margin-bottom: 1.4rem; }
+
+  .edu-list { margin-top: 2rem; }
+  .edu-item { display: grid; grid-template-columns: 90px 1fr; gap: 1rem; padding: 1.2rem 0; border-bottom: 1px solid var(--sand); }
+  .edu-year { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; color: var(--terracotta); padding-top: 0.15rem; }
+  .edu-title { font-size: 1rem; font-weight: 400; color: var(--ink); }
+  .edu-sub { font-size: 0.85rem; color: var(--sage); margin-top: 0.2rem; font-style: italic; }
+
+  .skills-side .section-tag { margin-top: 0; }
+  .skill-group { margin-bottom: 2rem; }
+  .skill-group-label { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage); margin-bottom: 0.7rem; }
+  .skill-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .pill { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid var(--sand); color: var(--earth-dark); padding: 0.3rem 0.7rem; transition: all 0.3s; }
+  .pill:hover { background: #2d5a27; color: var(--earth); border-color: #2d5a27; }
+
+  /* Research */
+  .research-section { background: var(--ink); color: var(--cream); padding: 8rem 4rem; }
+  .research-section .section-tag { color: #a0522d; }
+  .research-section .section-tag::after { background: #333; }
+  .research-section .section-title { color: var(--cream); }
+  .research-section .section-title em { color: #3a6b35; }
+
+  .thesis-card { margin-top: 4rem; display: grid; grid-template-columns: 1fr 2fr; gap: 4rem; border: 1px solid #2a2a20; padding: 3rem; position: relative; overflow: hidden; transition: border-color 0.4s; }
+  .thesis-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 0; background: var(--terracotta); transition: height 0.5s ease; }
+  .thesis-card:hover::before { height: 100%; }
+  .thesis-card:hover { border-color: #3a3a2a; }
+
+  .thesis-meta { display: flex; flex-direction: column; gap: 1.5rem; padding-top: 0.5rem; }
+  .thesis-year { font-size: 5rem; font-weight: 300; color: #8a8a7a; line-height: 1; font-style: italic; }
+  .thesis-badge { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; background: #3a6b35; color: var(--ink); padding: 0.4rem 0.8rem; display: inline-block; width: fit-content; }
+  .thesis-status { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--earth); }
+  .thesis-body h3 { font-family: 'Libre Baskerville', serif; font-size: 1.5rem; font-weight: 400; line-height: 1.4; color: var(--cream); margin-bottom: 1.5rem; font-style: italic; }
+  .thesis-body p { font-size: 1rem; line-height: 1.9; color: #8a8a7a; margin-bottom: 2rem; }
+  .thesis-keywords { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .keyword { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid #8a8a7a; padding: 0.3rem 0.7rem; color: #8a8a7a; transition: all 0.3s; }
+  .keyword:hover { border-color: #3a6b35; color: #4a7c45; }
+
+  /* Experience */
+  .exp-section { background: var(--cream-dark); padding: 8rem 4rem; }
+  .exp-list { margin-top: 4rem; display: flex; flex-direction: column; }
+  .exp-item { display: grid; grid-template-columns: 200px 1fr; gap: 3rem; padding: 2.5rem 0; border-bottom: 1px solid var(--sand); transition: padding-left 0.25s ease, background-color 0.25s ease; position: relative; overflow: hidden; }
+  .exp-item:hover { padding-left: 1.2rem; }
+  .exp-item:hover { background: rgba(232,240,228,0.55); }
+
+  .exp-date { padding-top: 0.2rem; }
+  .exp-period { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; color: var(--terracotta); }
+  .exp-company { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; color: var(--sage); margin-top: 0.3rem; text-transform: uppercase; }
+  .company-logo { margin-top: 0.6rem; display: block; height: auto; width: auto; }
+  .exp-role { font-family: 'Libre Baskerville', serif; font-size: 1.3rem; font-style: italic; font-weight: 300; color: var(--ink); margin-bottom: 0.6rem; }
+  .exp-desc { font-size: 0.95rem; line-height: 1.8; color: var(--earth-dark); }
+  .exp-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+  .exp-tag { font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; background: rgba(58,107,53,0.1); color: #3a6b35; padding: 0.25rem 0.6rem; }
+
+  /* Skills grid */
+  .skills-section { background: var(--cream); }
+  .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 4rem; background: var(--sand); }
+  .skill-cell { background: var(--cream); padding: 3rem 2.5rem; transition: background 0.3s, transform 0.3s; position: relative; overflow: hidden; cursor: pointer; }
+  .skill-cell::after { content: attr(data-num); position: absolute; bottom: -1rem; right: 1rem; font-size: 6rem; font-weight: 600; color: var(--sand); font-style: italic; line-height: 1; transition: bottom 0.4s, color 0.4s; }
+  .skill-cell:hover::after { bottom: 0.5rem; color: rgba(180,120,70,0.1); }
+  .skill-cell:hover { background: var(--cream-dark); transform: translateY(-4px); }
+  .skill-icon { font-size: 3.5rem; margin-bottom: 4.5rem; display: block; }
+  .skill-name { font-family: 'Libre Baskerville', serif; font-size: 2.5rem; font-weight: 400; margin-bottom: 0.8rem; font-style: italic; }
+  .skill-desc { font-family: 'DM Mono', monospace; font-size: 0.65rem; line-height: 1.7; letter-spacing: 0.05em; color: var(--earth-dark); opacity: 0.7; }
+
+  /* Projects */
+  .projects-section { background: var(--cream); }
+  .projects-grid { margin-top: 4rem; display: flex; flex-direction: column; }
+  .project-row { display: grid; grid-template-columns: 100px 1fr auto; align-items: center; gap: 3rem; padding: 2.5rem 0; border-bottom: 1px solid var(--sand); cursor: pointer; transition: padding 0.25s ease, background-color 0.25s ease; position: relative; overflow: hidden; }
+  .project-row:hover { padding-left: 1.5rem; }
+  .project-row:hover { background: rgba(232,240,228,0.55); }
+  .project-num { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.2em; color: var(--sage); }
+  .project-name { font-family: 'Libre Baskerville', serif; font-size: clamp(1.2rem, 2vw, 1.8rem); font-weight: 300; font-style: italic; }
+  .project-type { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--earth-dark); opacity: 0.6; }
+  .project-arrow { font-size: 1.2rem; color: var(--terracotta); opacity: 0; transform: translateX(-10px); transition: opacity 0.3s, transform 0.3s; }
+  .project-row:hover .project-arrow { opacity: 1; transform: translateX(0); }
+
+  /* Project galleries */
+  .project-gallery {
+    margin-top: 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .project-thumb {
+    width: 1.5cm;
+    height: 1cm;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: width 0.2s ease, height 0.2s ease, transform 0.2s ease;
+  }
+  .project-thumb img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+  .project-thumb:hover,
+  .project-thumb:focus-visible {
+    width: 2cm;
+    height: 1.5cm;
+    transform: translateY(-2px);
+    outline: none;
+  }
+
+  .gallery-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.45);
+    z-index: 9997;
+    padding: 2rem;
+  }
+  .gallery-modal.open { display: flex; }
+  .gallery-modal-panel {
+    width: 25cm;
+    height: 20cm;
+    background: rgba(250,247,238,0.98);
+    border: 1px solid rgba(0,0,0,0.10);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 22px 60px rgba(0,0,0,0.35);
+    position: relative;
+  }
+  .gallery-modal-panel img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    background: rgba(0,0,0,0.05);
+  }
+  .gallery-modal-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    border: 1px solid rgba(0,0,0,0.12);
+    background: rgba(250,247,238,0.95);
+    color: var(--ink);
+    border-radius: 999px;
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    line-height: 1;
+  }
+  .cursor-ring.force-expanded { width: 56px; height: 56px; border-color: var(--terracotta); }
+
+  /* Contact */
+  .contact-section { background: #3a6b35; color: var(--cream); display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; padding: 8rem 4rem; }
+  .contact-left .section-tag { color: #a0522d; opacity: 0.7; }
+  .contact-left .section-tag::after { background: rgba(255,255,255,0.2); }
+  .contact-left .section-title { color: var(--cream); font-size: clamp(2rem, 3.5vw, 3.5rem); }
+  .contact-left .section-title em { color: #3a6b35; }
+  .contact-tagline { margin-top: 1.5rem; font-size: 1.1rem; line-height: 1.8; color: rgba(245,240,232,0.7); font-style: italic; }
+  .contact-right { display: flex; flex-direction: column; gap: 1.5rem; }
+  .contact-item { display: flex; flex-direction: column; gap: 0.3rem; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.15); transition: background 0.3s, border-color 0.3s; }
+  .contact-item:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.3); }
+  .contact-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.5; }
+  .contact-value { font-size: 1.1rem; font-style: italic; }
+  .contact-cta { margin-top: 1rem; display: inline-flex; align-items: center; gap: 1rem; font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink); background: var(--earth); padding: 1.2rem 2.5rem; text-decoration: none; transition: background 0.3s, gap 0.3s; cursor: pointer; width: fit-content; }
+  .contact-cta:hover { background: var(--earth-dark); gap: 1.5rem; }
+
+  /* Footer */
+  footer { background: var(--ink); color: #3a3a2a; padding: 2rem 4rem; display: flex; justify-content: space-between; align-items: center; font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; }
+  footer span { color: var(--sage); }
+
+  /* Animations */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes drawLeaf { to { stroke-dashoffset: 0; } }
+  @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-15px) rotate(3deg); } }
+
+  /* Scroll reveal */
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-d1 { transition-delay: .1s; }
+  .reveal-d2 { transition-delay: .2s; }
+  .reveal-d3 { transition-delay: .3s; }
+
+  /* Performance mode for mobile / low-end */
+  @media (max-width: 900px), (prefers-reduced-motion: reduce) {
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none !important; }
+
+    .reveal {
+      transition-duration: 0.35s;
+      transition-timing-function: ease-out;
+    }
+
+    .project-thumb,
+    .project-row,
+    .exp-item,
+    .contact-cta,
+    .pill,
+    .skill-cell {
+      transition-duration: 0.18s !important;
+    }
+
+    .botanical-svg,
+    .hero-label,
+    .hero-name,
+    .hero-title,
+    .hero-bio,
+    .hero-scroll,
+    .stats-strip {
+      animation-duration: 0.45s !important;
+      animation-iteration-count: 1 !important;
+    }
+  }
+</style>
 </head>
 <body>
-    <header>
-        <h1>My Projects</h1>
-    </header>
-    <main>
-        <section class="projects">
-            <article class="project">
-                <h2>001 - ORA - SOLANA East - New Zayed</h2>
-                <div class="gallery">
-                <img src="assets/ORA%20SOLANA%20East/image1_thumb.jpg" alt="ORA - SOLANA East 1">
-                <img src="assets/ORA%20SOLANA%20East/image2_thumb.jpg" alt="ORA - SOLANA East 2">
-                <img src="assets/ORA%20SOLANA%20East/image3_thumb.jpg" alt="ORA - SOLANA East 3">
-                </div>
-            </article>
-            <!-- Renumber and include existing projects -->
-            <article class="project">
-                <h2>002 - Existing Project 1</h2>
-                <div class="gallery">
-                    <img src="assets/project1_thumb.jpg" alt="Existing Project 1">
-                </div>
-            </article>
-            <article class="project">
-                <h2>003 - Existing Project 2</h2>
-                <div class="gallery">
-                    <img src="assets/project2_thumb.jpg" alt="Existing Project 2">
-                </div>
-            </article>
-            <!-- Continue to renumber existing projects -->
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2026 My Portfolio</p>
-    </footer>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <div class="nav-logo">Yahya Gaber Edriss · LANDSCAPE ARCHITECT Portfolio</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Expertise</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-label">Landscape Architect · Urban Designer · Cairo, EG</div>
+    <h1 class="hero-name">Yahya<br><em>Gaber Edriss</em></h1>
+    <p class="hero-title">Where nature, cities & culture converge</p>
+    <p class="hero-bio">
+      A landscape architect and academic researcher with 7+ years delivering complex projects
+      across Egypt and Saudi Arabia — from master planning and construction packages
+      to GIS-based urban research. Currently an MSc Candidate at Cairo University
+      on the vitality of socio-cultural hubs.
+    </p>
+    <div class="hero-scroll">Scroll to explore</div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-visual">
+      <svg class="botanical-svg" viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle class="circle-anim" cx="200" cy="250" r="160" stroke="#7a8c6e" stroke-width="0.5" stroke-dasharray="8 4"/>
+        <circle class="circle-anim" cx="200" cy="250" r="120" stroke="#c4a882" stroke-width="0.3" stroke-dasharray="4 6"/>
+        <line class="grid-line" x1="40" y1="250" x2="360" y2="250" stroke="#7a8c6e" stroke-width="0.4" opacity="0.4"/>
+        <line class="grid-line" x1="200" y1="90" x2="200" y2="410" stroke="#7a8c6e" stroke-width="0.4" opacity="0.4"/>
+        <line class="grid-line" x1="87" y1="137" x2="313" y2="363" stroke="#c4a882" stroke-width="0.3" opacity="0.3"/>
+        <line class="grid-line" x1="313" y1="137" x2="87" y2="363" stroke="#c4a882" stroke-width="0.3" opacity="0.3"/>
+        <path class="leaf-path" d="M200 420 C200 350 180 300 160 250 C140 200 160 140 200 100" stroke="#7a8c6e" stroke-width="1.5" fill="none"/>
+        <path class="leaf-path" d="M185 280 C150 260 110 220 100 180 C120 185 150 205 170 230 C155 200 148 165 155 140 C175 165 185 210 185 280Z" fill="#a8b89a" opacity="0.4" stroke="#7a8c6e" stroke-width="0.8"/>
+        <path class="leaf-path-2" d="M215 260 C250 240 290 200 300 160 C280 165 250 185 230 210 C245 180 252 145 245 120 C225 145 215 190 215 260Z" fill="#c4a882" opacity="0.35" stroke="#c4a882" stroke-width="0.8"/>
+        <path class="leaf-path-3" d="M192 200 C170 185 155 160 160 140 C175 150 190 170 192 200Z" fill="#7a8c6e" opacity="0.5"/>
+        <path class="leaf-path-3" d="M208 180 C230 165 245 140 240 120 C225 130 210 150 208 180Z" fill="#b5674a" opacity="0.35"/>
+        <circle cx="200" cy="250" r="4" fill="#b5674a" opacity="0.8"/>
+        <circle cx="200" cy="250" r="10" stroke="#b5674a" stroke-width="0.8" fill="none" opacity="0.5"/>
+        <circle cx="200" cy="250" r="18" stroke="#b5674a" stroke-width="0.3" fill="none" opacity="0.3"/>
+        <circle cx="150" cy="190" r="2.5" fill="#7a8c6e" opacity="0.6"/>
+        <circle cx="255" cy="175" r="2" fill="#c4a882" opacity="0.7"/>
+        <circle cx="130" cy="235" r="1.5" fill="#b5674a" opacity="0.5"/>
+        <circle cx="270" cy="225" r="2" fill="#7a8c6e" opacity="0.5"/>
+        <circle cx="165" cy="310" r="2" fill="#c4a882" opacity="0.6"/>
+        <circle cx="240" cy="305" r="1.5" fill="#b5674a" opacity="0.5"/>
+        <ellipse cx="200" cy="250" rx="50" ry="30" stroke="#7a8c6e" stroke-width="0.3" fill="none" opacity="0.3" transform="rotate(-15 200 250)"/>
+        <ellipse cx="200" cy="250" rx="75" ry="45" stroke="#c4a882" stroke-width="0.3" fill="none" opacity="0.2" transform="rotate(-15 200 250)"/>
+      </svg>
+    </div>
+
+    <div class="stats-strip">
+      <div class="stat-item">
+        <div class="stat-number">7+</div>
+        <div class="stat-label">Years Practice</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">30+</div>
+        <div class="stat-label">Projects</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">MSc Candidate</div>
+        <div class="stat-label">Cairo University</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-section" id="about">
+  <div class="about-bio">
+    <div class="section-tag reveal">Profile</div>
+    <h2 class="section-title reveal">Yahya<br><em>Gaber Edriss</em></h2>
+    <div class="reveal">
+      <p>Landscape architect and urban designer with over a decade of experience across Egypt and Saudi Arabia. Expert in full-package delivery — from concept and PS presentations through construction documentation, material selection, and on-site supervision.</p>
+      <p>Skilled in AutoCAD, ArcMap GIS, Adobe InDesign, Illustrator, Photoshop, SketchUp, Lumion, and Presentation software. Currently completing a Master's in Urban Design at Cairo University.</p>
+    </div>
+    <div class="edu-list reveal">
+      <div class="edu-item">
+        <div class="edu-year">2019 – Now</div>
+        <div>
+          <div class="edu-title">Master's in Urban Design</div>
+          <div class="edu-sub">Cairo University · Faculty of Regional & Urban Planning</div>
+        </div>
+      </div>
+      <div class="edu-item">
+        <div class="edu-year">2014 – 2019</div>
+        <div>
+          <div class="edu-title">BSc Urban & Regional Planning</div>
+          <div class="edu-sub">Cairo University · GPA 2.30</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="skills-side">
+    <div class="section-tag reveal">Skills & Tools</div>
+    <div class="skill-group reveal reveal-d1">
+      <div class="skill-group-label">Design Software</div>
+      <div class="skill-pills">
+        <span class="pill">AutoCAD</span>
+        <span class="pill">SketchUp</span>
+        <span class="pill">Lumion</span>
+        <span class="pill">Adobe InDesign</span>
+        <span class="pill">Illustrator</span>
+        <span class="pill">Photoshop</span>
+      </div>
+    </div>
+    <div class="skill-group reveal reveal-d2">
+      <div class="skill-group-label">Analysis & GIS</div>
+      <div class="skill-pills">
+        <span class="pill">ArcMap GIS</span>
+        <span class="pill">Spatial Analysis</span>
+        <span class="pill">Land Use Mapping</span>
+        <span class="pill">Urban Vitality</span>
+      </div>
+    </div>
+    <div class="skill-group reveal reveal-d3">
+      <div class="skill-group-label">Project Delivery</div>
+      <div class="skill-pills">
+        <span class="pill">Landscape Packages</span>
+        <span class="pill">Construction Docs</span>
+        <span class="pill">Material Selection</span>
+        <span class="pill">Vendor Lists</span>
+        <span class="pill">Value Engineering</span>
+        <span class="pill">Site Supervision</span>
+      </div>
+    </div>
+    <div class="skill-group reveal">
+      <div class="skill-group-label">Languages</div>
+      <div class="skill-pills">
+        <span class="pill">Arabic — Native</span>
+        <span class="pill">English — Very Good</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH -->
+<section class="research-section" id="research">
+  <div class="section-tag reveal">Academic Research</div>
+  <h2 class="section-title reveal">Current <em>Investigation</em></h2>
+
+  <div class="thesis-card reveal">
+    <div class="thesis-meta">
+      <div class="thesis-year">2026</div>
+      <div class="thesis-badge">Master's Thesis</div>
+      <div class="thesis-status">● In Progress</div>
+    </div>
+    <div class="thesis-body">
+      <h3>A Proposed Tool for Vitality Assessment of Socio-Cultural Hubs Using Visual Temporal Analytical Approach and GIS</h3>
+      <p>
+        Developing a novel methodology for evaluating the living vitality of urban cultural spaces —
+        integrating Geographic Information Systems with visual temporal analysis to understand how public hubs
+        sustain meaning, memory, and social activity across time. The framework is validated through
+        comparative case studies in Egyptian and international contexts.
+      </p>
+      <div class="thesis-keywords">
+        <span class="keyword">Urban Vitality</span>
+        <span class="keyword">GIS Analysis</span>
+        <span class="keyword">Socio-Cultural Hubs</span>
+        <span class="keyword">Visual Temporal</span>
+        <span class="keyword">Public Space</span>
+        <span class="keyword">Place Identity</span>
+        <span class="keyword">Cairo University</span>
+        <span class="keyword">Assessment Tools</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="exp-section" id="experience">
+  <div class="section-tag reveal">Career</div>
+  <h2 class="section-title reveal">Professional <em>Experience</em></h2>
+
+  <div class="exp-list">
+    <div class="exp-item reveal">
+      <div class="exp-date">
+        <div class="exp-period">Mar 2023 – Present</div>
+        <div class="exp-company">Schaduf Landscape</div>
+        <img class="company-logo" src="assets/schaduf_logo.png" alt="Schaduf Landscape Architects logo">
+      </div>
+      <div>
+        <div class="exp-role">Urban & Landscape Architect</div>
+        <div class="exp-desc">Full landscape packages for major New Cairo residential compounds — grading, hardscape, lighting, signage, details, concept, tender documents, and construction documentation.</div>
+        <div class="exp-tags">
+          <span class="exp-tag">ORA ZED East — C07, C10, C01, C02, Main Trunk</span>
+          <span class="exp-tag">Al-Borouj Parcel 2.4</span>
+          <span class="exp-tag">Silver Sand</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-date">
+        <div class="exp-period">Mar 2022 – Feb 2023</div>
+        <div class="exp-company">Gateway Urban Developments</div>
+        <img class="company-logo" src="assets/Gateway_logo.PNG" alt="Gateway Urban Developments logo">
+      </div>
+      <div>
+        <div class="exp-role">Urban & Landscape Designer</div>
+        <div class="exp-desc">Moodboard, concept design, and design development through tender and construction documents. Projects include social housing phases and the New Suez Gate city master layout.</div>
+        <div class="exp-tags">
+          <span class="exp-tag">Capital Gardens Social Housing</span>
+          <span class="exp-tag">New Suez Gate City</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-date">
+        <div class="exp-period">Apr 2021 – Mar 2022</div>
+        <div class="exp-company">Nama'a Consultants</div>
+        <img class="company-logo" src="assets/namaa_logo.PNG" alt="Nama'a Consultants logo">
+      </div>
+      <div>
+        <div class="exp-role">Urban Planning Engineer</div>
+        <div class="exp-desc">Studied and analysed current facade and panel systems in Riyadh, developing contemporary proposals under Vision 2030 urban streetscape framework.</div>
+        <div class="exp-tags">
+          <span class="exp-tag">Riyadh Panels & Facades · Saudi 2030</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-date">
+        <div class="exp-period">Mar 2020 – Mar 2021</div>
+        <div class="exp-company">Egyptian Army</div>
+        <img class="company-logo" src="assets/Egyptianarmy_logo.PNG" alt="Egyptian Army logo">
+      </div>
+      <div>
+        <div class="exp-role">Technical Office Engineer</div>
+        <div class="exp-desc">Supervised construction and finishes on landmark projects including the Nile waterfront promenade Mamsha Ahl-Masr and infrastructure projects in Greater Cairo.</div>
+        <div class="exp-tags">
+          <span class="exp-tag">Mamsha Ahl-Masr · Nile Promenade</span>
+          <span class="exp-tag">Cairo Bridges</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-date">
+        <div class="exp-period">Aug 2018</div>
+        <div class="exp-company">Engineering Consultant Group</div>
+        <img class="company-logo" src="assets/ECG_logo.PNG" alt="Engineering Consultant Group (ECG) logo">
+      </div>
+      <div>
+        <div class="exp-role">Urban Design Trainee</div>
+        <div class="exp-desc">Training in urban and landscape design with exposure to Saudi Arabian and Qatari neighbourhood projects.</div>
+        <div class="exp-tags">
+          <span class="exp-tag">Riyadh Neighbourhoods</span>
+          <span class="exp-tag">Katara Hospitality · Qatar</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-date">
+        <div class="exp-period">Nov 2015 – Sep 2016</div>
+        <div class="exp-company">El-Masry Engineering</div>
+      </div>
+      <div>
+        <div class="exp-role">GIS Engineer</div>
+        <div class="exp-desc">Geospatial analyst producing ArcGIS maps for Egyptian villages and cities for urban planning and governmental authorities.</div>
+        <div class="exp-tags">
+          <span class="exp-tag">Egyptian Village Mapping</span>
+          <span class="exp-tag">ArcGIS · 5 Years Experience</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section class="skills-section" id="skills">
+  <div class="section-tag reveal">Core Expertise</div>
+  <h2 class="section-title reveal">Fields of <em>Practice</em></h2>
+
+  <div class="skills-grid">
+    <div class="skill-cell reveal" data-num="01">
+      <span class="skill-icon">🌿</span>
+      <div class="skill-name">Landscape Design</div>
+      <div class="skill-desc">Site analysis, planting design, ecological planning, and spatial composition for residential, public, and mixed-use landscapes across Egypt and Saudi Arabia</div>
+    </div>
+    <div class="skill-cell reveal" data-num="02">
+      <span class="skill-icon">🗺</span>
+      <div class="skill-name">GIS & Spatial Analysis</div>
+      <div class="skill-desc">ArcMap GIS for land use mapping, spatial overlay, and evidence-based urban analysis — 5 years of professional and research experience</div>
+    </div>
+    <div class="skill-cell reveal" data-num="03">
+      <span class="skill-icon">🏙</span>
+      <div class="skill-name">Urban Research</div>
+      <div class="skill-desc">Mixed-method research design, post-occupancy evaluation, vitality assessment, and socio-cultural space mapping</div>
+    </div>
+    <div class="skill-cell reveal" data-num="04">
+      <span class="skill-icon">📐</span>
+      <div class="skill-name">Construction Docs</div>
+      <div class="skill-desc">Full landscape packages including hardscape, grading, lighting, signage, fences, details, material selection, and vendor-list preparation</div>
+    </div>
+    <div class="skill-cell reveal" data-num="05">
+      <span class="skill-icon">🖥</span>
+      <div class="skill-name">Design Software</div>
+      <div class="skill-desc">AutoCAD, SketchUp, Lumion, Adobe InDesign, Illustrator, Photoshop, and MS Office — full design pipeline from concept to presentation</div>
+    </div>
+    <div class="skill-cell reveal" data-num="06">
+      <span class="skill-icon">🏛</span>
+      <div class="skill-name">Planning & Policy</div>
+      <div class="skill-desc">Regional and urban planning frameworks, heritage conservation, and public realm strategy in Egyptian and Gulf contexts</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="projects-section" id="projects">
+  <div class="section-tag reveal">Selected Work</div>
+  <h2 class="section-title reveal">Projects & <em>Studies</em></h2>
+
+  <div class="projects-grid reveal">
+    <div class="project-row">
+      <span class="project-num">001</span>
+      <div>
+        <div class="project-name">ORA ZED East — Multi-Cluster Landscape Package</div>
+        <div class="project-type">Landscape Design · New Cairo, Egypt</div>
+        <div class="project-gallery" aria-label="ORA ZED East gallery">
+          <button class="project-thumb" type="button" data-full="assets/ORA%20ZED%20East/C01.0.jpg" aria-label="Open C01.0">
+            <img src="assets/ORA%20ZED%20East/thumbnails/C01.0.jpg" alt="ORA ZED East - C01.0" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20ZED%20East/C01.1.jpg" aria-label="Open C01.1">
+            <img src="assets/ORA%20ZED%20East/thumbnails/C01.1.jpg" alt="ORA ZED East - C01.1" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20ZED%20East/C10.0.jpg" aria-label="Open C10.0">
+            <img src="assets/ORA%20ZED%20East/thumbnails/C10.0.jpg" alt="ORA ZED East - C10.0" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20ZED%20East/C12.1.jpg" aria-label="Open C12.1">
+            <img src="assets/ORA%20ZED%20East/thumbnails/C12.1.jpg" alt="ORA ZED East - C12.1" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20ZED%20East/C12.2.jpg" aria-label="Open C12.2">
+            <img src="assets/ORA%20ZED%20East/thumbnails/C12.2.jpg" alt="ORA ZED East - C12.2" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20ZED%20East/C12.3.jpg" aria-label="Open C12.3">
+            <img src="assets/ORA%20ZED%20East/thumbnails/C12.3.jpg" alt="ORA ZED East - C12.3" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20ZED%20East/C7.jpg" aria-label="Open C7">
+            <img src="assets/ORA%20ZED%20East/thumbnails/C7.jpg" alt="ORA ZED East - C7" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20ZED%20East/FENCES_01.jpg" aria-label="Open FENCES 01">
+            <img src="assets/ORA%20ZED%20East/thumbnails/FENCES_01.jpg" alt="ORA ZED East - FENCES_01" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20ZED%20East/FENCES_02.jpg" aria-label="Open FENCES 02">
+            <img src="assets/ORA%20ZED%20East/thumbnails/FENCES_02.jpg" alt="ORA ZED East - FENCES_02" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20ZED%20East/FENCES_03.jpg" aria-label="Open FENCES 03">
+            <img src="assets/ORA%20ZED%20East/thumbnails/FENCES_03.jpg" alt="ORA ZED East - FENCES_03" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20ZED%20East/MAIN_TRUNK_01.jpg" aria-label="Open MAIN TRUNK 01">
+            <img src="assets/ORA%20ZED%20East/thumbnails/MAIN_TRUNK_01.jpg" alt="ORA ZED East - MAIN_TRUNK_01" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20ZED%20East/SIGNAGE_01.jpg" aria-label="Open SIGNAGE 01">
+            <img src="assets/ORA%20ZED%20East/thumbnails/SIGNAGE_01.jpg" alt="ORA ZED East - SIGNAGE_01" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20ZED%20East/SIGNAGE_02.jpg" aria-label="Open SIGNAGE 02">
+            <img src="assets/ORA%20ZED%20East/thumbnails/SIGNAGE_02.jpg" alt="ORA ZED East - SIGNAGE_02" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20ZED%20East/SIGNAGE_03.jpg" aria-label="Open SIGNAGE 03">
+            <img src="assets/ORA%20ZED%20East/thumbnails/SIGNAGE_03.jpg" alt="ORA ZED East - SIGNAGE_03" loading="lazy" decoding="async">
+          </button>
+        </div>
+      </div>
+      <span class="project-arrow">→</span>
+    </div>
+    <div class="project-row">
+      <span class="project-num">002</span>
+      <div>
+        <div class="project-name">New Suez Gate City Master Plan</div>
+        <div class="project-type">Urban Planning · New Urban Communities Authority</div>
+        <div class="project-gallery" aria-label="New Suez Gate City gallery">
+          <button class="project-thumb" type="button" data-full="assets/NEW%20SUEZ%20GATE%20CITY/01.jpg" aria-label="Open 01">
+            <img src="assets/NEW%20SUEZ%20GATE%20CITY/thumbnails/01.jpg" alt="New Suez Gate City - 01" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/NEW%20SUEZ%20GATE%20CITY/02.jpg" aria-label="Open 02">
+            <img src="assets/NEW%20SUEZ%20GATE%20CITY/thumbnails/02.jpg" alt="New Suez Gate City - 02" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/NEW%20SUEZ%20GATE%20CITY/03.jpg" aria-label="Open 03">
+            <img src="assets/NEW%20SUEZ%20GATE%20CITY/thumbnails/03.jpg" alt="New Suez Gate City - 03" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/NEW%20SUEZ%20GATE%20CITY/04.jpg" aria-label="Open 04">
+            <img src="assets/NEW%20SUEZ%20GATE%20CITY/thumbnails/04.jpg" alt="New Suez Gate City - 04" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/NEW%20SUEZ%20GATE%20CITY/05.jpg" aria-label="Open 05">
+            <img src="assets/NEW%20SUEZ%20GATE%20CITY/thumbnails/05.jpg" alt="New Suez Gate City - 05" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/NEW%20SUEZ%20GATE%20CITY/06.jpg" aria-label="Open 06">
+            <img src="assets/NEW%20SUEZ%20GATE%20CITY/thumbnails/06.jpg" alt="New Suez Gate City - 06" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/NEW%20SUEZ%20GATE%20CITY/07.jpg" aria-label="Open 07">
+            <img src="assets/NEW%20SUEZ%20GATE%20CITY/thumbnails/07.jpg" alt="New Suez Gate City - 07" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/NEW%20SUEZ%20GATE%20CITY/08.jpg" aria-label="Open 08">
+            <img src="assets/NEW%20SUEZ%20GATE%20CITY/thumbnails/08.jpg" alt="New Suez Gate City - 08" loading="lazy" decoding="async">
+          </button>
+        </div>
+      </div>
+      <span class="project-arrow">→</span>
+    </div>
+    <div class="project-row">
+      <span class="project-num">003</span>
+      <div>
+        <div class="project-name">Mamsha Ahl-Masr — Nile Promenade</div>
+        <div class="project-type">Construction Supervision · Cairo Waterfront</div>
+        <div class="project-gallery" aria-label="Mamsha Ahl-Masr gallery">
+          <button class="project-thumb" type="button" data-full="assets/MAMSHA%20AHL-MASR/01.jpg" aria-label="Open 01">
+            <img src="assets/MAMSHA%20AHL-MASR/thumbnails/01.jpg" alt="Mamsha Ahl-Masr - 01" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/MAMSHA%20AHL-MASR/02.jpg" aria-label="Open 02">
+            <img src="assets/MAMSHA%20AHL-MASR/thumbnails/02.jpg" alt="Mamsha Ahl-Masr - 02" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/MAMSHA%20AHL-MASR/03.jpg" aria-label="Open 03">
+            <img src="assets/MAMSHA%20AHL-MASR/thumbnails/03.jpg" alt="Mamsha Ahl-Masr - 03" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/MAMSHA%20AHL-MASR/04.jpg" aria-label="Open 04">
+            <img src="assets/MAMSHA%20AHL-MASR/thumbnails/04.jpg" alt="Mamsha Ahl-Masr - 04" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/MAMSHA%20AHL-MASR/05.jpg" aria-label="Open 05">
+            <img src="assets/MAMSHA%20AHL-MASR/thumbnails/05.jpg" alt="Mamsha Ahl-Masr - 05" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/MAMSHA%20AHL-MASR/06.jpg" aria-label="Open 06">
+            <img src="assets/MAMSHA%20AHL-MASR/thumbnails/06.jpg" alt="Mamsha Ahl-Masr - 06" loading="lazy" decoding="async">
+          </button>
+        </div>
+      </div>
+      <span class="project-arrow">→</span>
+    </div>
+    <div class="project-row">
+      <span class="project-num">004</span>
+      <div>
+        <div class="project-name">Al-Borouj Parcel 2.4</div>
+        <div class="project-type">Residential Landscape · Capital Group Properties</div>
+        <div class="project-gallery" aria-label="Al-Borouj Parcel 2.4 gallery">
+          <button class="project-thumb" type="button" data-full="assets/AL-BOUROUJ%20PARCEL%202.4/LANDSCAPE.jpg" aria-label="Open LANDSCAPE">
+            <img src="assets/AL-BOUROUJ%20PARCEL%202.4/thumbnails/LANDSCAPE.jpg" alt="Al-Borouj Parcel 2.4 - LANDSCAPE" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/AL-BOUROUJ%20PARCEL%202.4/PARCEL%202.4%20-Coloured%20Master%20Plan.jpg" aria-label="Open Coloured Master Plan">
+            <img src="assets/AL-BOUROUJ%20PARCEL%202.4/thumbnails/PARCEL%202.4%20-Coloured%20Master%20Plan.jpg" alt="Al-Borouj Parcel 2.4 - Coloured Master Plan" loading="lazy" decoding="async">
+          </button>
+        </div>
+      </div>
+      <span class="project-arrow">→</span>
+    </div>
+    <div class="project-row">
+      <span class="project-num">005</span>
+      <div>
+        <div class="project-name">Riyadh Panels & Facades Study</div>
+        <div class="project-type">Urban Design · Saudi Vision 2030</div>
+      </div>
+      <span class="project-arrow">→</span>
+    </div>
+    <div class="project-row">
+      <span class="project-num">006</span>
+      <div>
+        <div class="project-name">GIS Vitality Assessment Tool — MSc Thesis</div>
+        <div class="project-type">Academic Research · Cairo University</div>
+      </div>
+      <span class="project-arrow">→</span>
+    </div>
+    <div class="project-row">
+      <span class="project-num">007</span>
+      <div>
+        <div class="project-name">Social Housing Phases — Capital Gardens & New Aswan</div>
+        <div class="project-type">Landscape Package · Gateway Urban Developments</div>
+      </div>
+      <span class="project-arrow">→</span>
+    </div>
+    <div class="project-row">
+      <span class="project-num">008+</span>
+      <div>
+        <div class="project-name">26+ Additional Projects across Egypt & Saudi Arabia</div>
+        <div class="project-type">Parks · Cornishes · Heritage Sites · Medical Centres</div>
+      </div>
+      <span class="project-arrow">→</span>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<div class="contact-section" id="contact">
+  <div class="contact-left reveal">
+    <div class="section-tag">Get in touch</div>
+    <h2 class="section-title">Open to <em>Collaboration</em></h2>
+    <p class="contact-tagline">
+      Available for landscape architecture consultancy, urban design projects, and academic exchange —
+      particularly in urban vitality research, GIS application, and cultural landscape theory.
+    </p>
+  </div>
+  <div class="contact-right reveal">
+    <div class="contact-item">
+      <span class="contact-label">Email</span>
+      <span class="contact-value">yahyagaber110@gmail.com</span>
+    </div>
+    <div class="contact-item">
+      <span class="contact-label">Phone</span>
+      <span class="contact-value">010 – 6182 – 2583</span>
+    </div>
+    <div class="contact-item">
+      <span class="contact-label">Institution</span>
+      <span class="contact-value">Cairo University · Faculty of Regional & Urban Planning</span>
+    </div>
+    <div class="contact-item">
+      <span class="contact-label">Location</span>
+      <span class="contact-value">Cairo, Egypt</span>
+    </div>
+    <a class="contact-cta" href="mailto:yahyagaber110@gmail.com">Send a message →</a>
+  </div>
+</div>
+
+<footer>
+  <div>© 2025 Yahya Gaber Edriss · All rights reserved</div>
+  <div>Landscape Architecture · <span>Cairo University</span></div>
+  <div>Built with intention</div>
+</footer>
+
+<div class="gallery-modal" id="galleryModal" aria-hidden="true">
+  <div class="gallery-modal-panel" role="dialog" aria-modal="true" aria-label="Image preview">
+    <button class="gallery-modal-close" id="galleryModalClose" type="button" aria-label="Close">×</button>
+    <img id="galleryModalImg" src="" alt="">
+  </div>
+</div>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
+  let ringX = mouseX;
+  let ringY = mouseY;
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  function animateCursor() {
+    ringX += (mouseX - ringX) * 0.16;
+    ringY += (mouseY - ringY) * 0.16;
+    cursor.style.transform = `translate(${mouseX - 4}px, ${mouseY - 4}px)`;
+    ring.style.transform = `translate(${ringX - 16}px, ${ringY - 16}px)`;
+    requestAnimationFrame(animateCursor);
+  }
+  requestAnimationFrame(animateCursor);
+  document.querySelectorAll('a, button, .skill-cell, .project-row, .contact-item, .exp-item').forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('expanded'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('expanded'));
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) setTimeout(() => entry.target.classList.add('visible'), i * 80);
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Gallery modal
+  const galleryModal = document.getElementById('galleryModal');
+  const galleryModalImg = document.getElementById('galleryModalImg');
+  const galleryModalClose = document.getElementById('galleryModalClose');
+
+  function openGallery(src, alt) {
+    galleryModalImg.src = src;
+    galleryModalImg.alt = alt || 'Gallery image';
+    galleryModal.classList.add('open');
+    ring.classList.add('force-expanded');
+  }
+
+  function closeGallery() {
+    galleryModal.classList.remove('open');
+    galleryModalImg.src = '';
+    ring.classList.remove('force-expanded');
+  }
+
+  document.querySelectorAll('.project-thumb').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const full = btn.getAttribute('data-full') || btn.querySelector('img')?.getAttribute('src');
+      const alt = btn.querySelector('img')?.getAttribute('alt') || '';
+      if (full) openGallery(full, alt);
+    });
+  });
+
+  galleryModalClose.addEventListener('click', closeGallery);
+  galleryModal.addEventListener('click', (e) => {
+    if (e.target === galleryModal) closeGallery();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && galleryModal.classList.contains('open')) closeGallery();
+  });
+</script>
 </body>
 </html>
