@@ -3,75 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
     <title>Portfolio</title>
-    <style>
-        /* CSS fixes to address bugs */
-        /* Complete truncated CSS lines */
-        .gallery-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            transition: opacity 0.3s ease;
-        }
-        .gallery-modal.active {
-            display: block;
-            opacity: 1;
-        }
-        /* Improve performance by reducing repaints */
-        img {
-            max-width: 100%;
-            height: auto;
-            animation: fadeIn 0.5s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1>Welcome to My Portfolio</h1>
+        <h1>My Projects</h1>
     </header>
     <main>
-        <!-- Gallery section -->
-        <section class="gallery">
-            <h2>Gallery</h2>
-            <div class="gallery-container">
-                <!-- Gallery images will be loaded here -->
-                <img src="image1.jpg" alt="Image 1" onerror="this.onerror=null; this.src='fallback.jpg';">
-                <img src="image2.jpg" alt="Image 2" onerror="this.onerror=null; this.src='fallback.jpg';">
-            </div>
+        <section class="projects">
+            <article class="project">
+                <h2>001 - ORA - SOLANA East - New Zayed</h2>
+                <div class="gallery">
+                <img src="assets/ORA%20SOLANA%20East/image1_thumb.jpg" alt="ORA - SOLANA East 1">
+                <img src="assets/ORA%20SOLANA%20East/image2_thumb.jpg" alt="ORA - SOLANA East 2">
+                <img src="assets/ORA%20SOLANA%20East/image3_thumb.jpg" alt="ORA - SOLANA East 3">
+                </div>
+            </article>
+            <!-- Renumber and include existing projects -->
+            <article class="project">
+                <h2>002 - Existing Project 1</h2>
+                <div class="gallery">
+                    <img src="assets/project1_thumb.jpg" alt="Existing Project 1">
+                </div>
+            </article>
+            <article class="project">
+                <h2>003 - Existing Project 2</h2>
+                <div class="gallery">
+                    <img src="assets/project2_thumb.jpg" alt="Existing Project 2">
+                </div>
+            </article>
+            <!-- Continue to renumber existing projects -->
         </section>
-        <div class="gallery-modal" id="galleryModal">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <img class="modal-content" id="modalImage">
-        </div>
     </main>
     <footer>
-        <p>&copy; 2026 Portfolio</p>
+        <p>&copy; 2026 My Portfolio</p>
     </footer>
-    <script>
-        const galleryImages = document.querySelectorAll('.gallery img');
-
-        galleryImages.forEach(image => {
-            image.addEventListener('click', () => {
-                const modal = document.getElementById('galleryModal');
-                const modalImg = document.getElementById('modalImage');
-                modal.style.display = 'block';
-                modalImg.src = image.src;
-            });
-        });
-
-        function closeModal() {
-            document.getElementById('galleryModal').style.display = 'none';
-        }
-    </script>
 </body>
 </html>
