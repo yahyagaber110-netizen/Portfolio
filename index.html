@@ -11,7 +11,7 @@
     --sage-light: #4a7c45;
     --earth: #8b6914;
     --earth-dark: #6b4f10;
-    --ink: #2e2b23;
+    --ink: #444035;
     --cream: #faf7ee;
     --cream-dark: #f0ebe0;
     --sand: #c8b89a;
@@ -22,7 +22,7 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; scroll-padding-top: 5.5rem; }
 
   body {
     font-family: 'Source Sans 3', sans-serif;
@@ -32,17 +32,57 @@
     cursor: none;
   }
 
+  /* Discourage casual save/drag on images; clicks pass through to parents (e.g. .project-thumb buttons). */
+  img {
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    pointer-events: none;
+  }
+
   /* Custom Cursor */
   .cursor { width: 8px; height: 8px; background: var(--terracotta); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; transition: transform 0.08s linear; transform: translate(-50%, -50%); will-change: transform; }
   .cursor-ring { width: 32px; height: 32px; border: 1px solid var(--sage); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998; transition: width 0.22s, height 0.22s; transform: translate(-50%, -50%); will-change: transform, width, height; }
   .cursor-ring.expanded { width: 56px; height: 56px; border-color: var(--terracotta); }
 
   /* Nav */
-  nav { position: fixed; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 4rem; z-index: 100; mix-blend-mode: multiply; }
-  .nav-logo { font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.2em; color: var(--earth-dark); text-transform: uppercase; }
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 4rem;
+    z-index: 100;
+    background: #2d5a27;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  }
+  .nav-logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: rgba(250, 247, 238, 0.95);
+    text-transform: uppercase;
+  }
   .nav-links { display: flex; gap: 2.5rem; list-style: none; }
-  .nav-links a { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink); text-decoration: none; opacity: 0.6; transition: opacity 0.3s; }
-  .nav-links a:hover { opacity: 1; }
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(250, 247, 238, 0.78);
+    text-decoration: none;
+    transition: color 0.25s ease, opacity 0.25s ease;
+  }
+  .nav-links a:hover { color: var(--cream); }
+  .nav-links a:focus-visible {
+    outline: 2px solid rgba(250, 247, 238, 0.45);
+    outline-offset: 4px;
+  }
 
   /* Hero */
   .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; position: relative; overflow: hidden; }
@@ -213,6 +253,8 @@
   .gallery-modal-panel {
     width: 25cm;
     height: 20cm;
+    max-width: min(96vw, 25cm);
+    max-height: min(85vh, 20cm);
     background: rgba(250,247,238,0.98);
     border: 1px solid rgba(0,0,0,0.10);
     border-radius: 12px;
@@ -226,6 +268,37 @@
     object-fit: contain;
     display: block;
     background: rgba(0,0,0,0.05);
+  }
+  .gallery-modal-prev,
+  .gallery-modal-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    border: 1px solid rgba(0,0,0,0.12);
+    background: rgba(250,247,238,0.92);
+    color: var(--ink);
+    border-radius: 999px;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 1.15rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+  }
+  .gallery-modal-prev { left: 0.5rem; }
+  .gallery-modal-next { right: 0.5rem; }
+  .gallery-modal-prev:hover,
+  .gallery-modal-next:hover,
+  .gallery-modal-prev:focus-visible,
+  .gallery-modal-next:focus-visible {
+    background: rgba(255,255,255,0.98);
+    border-color: rgba(160,82,45,0.35);
+    outline: none;
   }
   .gallery-modal-close {
     position: absolute;
@@ -260,8 +333,19 @@
   .contact-cta:hover { background: var(--earth-dark); gap: 1.5rem; }
 
   /* Footer */
-  footer { background: var(--ink); color: #3a3a2a; padding: 2rem 4rem; display: flex; justify-content: space-between; align-items: center; font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; }
-  footer span { color: var(--sage); }
+  footer {
+    background: var(--ink);
+    color: rgba(245, 240, 232, 0.68);
+    padding: 2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  footer span { color: rgba(180, 210, 170, 0.95); }
 
   /* Animations */
   @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
@@ -639,6 +723,104 @@
     <div class="project-row">
       <span class="project-num">001</span>
       <div>
+        <div class="project-name">ORA-Solana West - New Zayed</div>
+        <div class="project-type">Landscape Design · New Zayed, Egypt</div>
+        <div class="project-gallery" aria-label="ORA-Solana West New Zayed gallery">
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/01.jpg" aria-label="Open 01">
+            <img src="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/thumbnails/01.jpg" alt="ORA-Solana West New Zayed - 01" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/02.jpg" aria-label="Open 02">
+            <img src="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/thumbnails/02.jpg" alt="ORA-Solana West New Zayed - 02" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/03.jpg" aria-label="Open 03">
+            <img src="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/thumbnails/03.jpg" alt="ORA-Solana West New Zayed - 03" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/04.JPG" aria-label="Open 04">
+            <img src="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/thumbnails/04.jpg" alt="ORA-Solana West New Zayed - 04" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/05.JPG" aria-label="Open 05">
+            <img src="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/thumbnails/05.jpg" alt="ORA-Solana West New Zayed - 05" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/06.jpg" aria-label="Open 06">
+            <img src="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/thumbnails/06.jpg" alt="ORA-Solana West New Zayed - 06" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/07.jpg" aria-label="Open 07">
+            <img src="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/thumbnails/07.jpg" alt="ORA-Solana West New Zayed - 07" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/08.jpg" aria-label="Open 08">
+            <img src="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/thumbnails/08.jpg" alt="ORA-Solana West New Zayed - 08" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/09.jpg" aria-label="Open 09">
+            <img src="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/thumbnails/09.jpg" alt="ORA-Solana West New Zayed - 09" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/10.jpg" aria-label="Open 10">
+            <img src="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/thumbnails/10.jpg" alt="ORA-Solana West New Zayed - 10" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/11.jpg" aria-label="Open 11">
+            <img src="assets/ORA%20SOLANA%20WEST%20-%20NEW%20ZAYED/thumbnails/11.jpg" alt="ORA-Solana West New Zayed - 11" loading="lazy" decoding="async">
+          </button>
+        </div>
+      </div>
+      <span class="project-arrow">→</span>
+    </div>
+    <div class="project-row">
+      <span class="project-num">002</span>
+      <div>
+        <div class="project-name">ORA-Solana East - New Cairo</div>
+        <div class="project-type">Landscape Design · New Cairo, Egypt</div>
+        <div class="project-gallery" aria-label="ORA-Solana East gallery">
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20EAST/01.jpg" aria-label="Open 01">
+            <img src="assets/ORA%20SOLANA%20EAST/thumbnails/01.jpg" alt="ORA-Solana East - 01" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20EAST/02.JPG" aria-label="Open 02">
+            <img src="assets/ORA%20SOLANA%20EAST/thumbnails/02.jpg" alt="ORA-Solana East - 02" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20EAST/03.jpg" aria-label="Open 03">
+            <img src="assets/ORA%20SOLANA%20EAST/thumbnails/03.jpg" alt="ORA-Solana East - 03" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20EAST/04.jpg" aria-label="Open 04">
+            <img src="assets/ORA%20SOLANA%20EAST/thumbnails/04.jpg" alt="ORA-Solana East - 04" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20EAST/05.jpg" aria-label="Open 05">
+            <img src="assets/ORA%20SOLANA%20EAST/thumbnails/05.jpg" alt="ORA-Solana East - 05" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20EAST/06.jpg" aria-label="Open 06">
+            <img src="assets/ORA%20SOLANA%20EAST/thumbnails/06.jpg" alt="ORA-Solana East - 06" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20EAST/07.jpg" aria-label="Open 07">
+            <img src="assets/ORA%20SOLANA%20EAST/thumbnails/07.jpg" alt="ORA-Solana East - 07" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20EAST/08.jpg" aria-label="Open 08">
+            <img src="assets/ORA%20SOLANA%20EAST/thumbnails/08.jpg" alt="ORA-Solana East - 08" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20EAST/09.jpg" aria-label="Open 09">
+            <img src="assets/ORA%20SOLANA%20EAST/thumbnails/09.jpg" alt="ORA-Solana East - 09" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20EAST/10.jpg" aria-label="Open 10">
+            <img src="assets/ORA%20SOLANA%20EAST/thumbnails/10.jpg" alt="ORA-Solana East - 10" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20EAST/11.jpg" aria-label="Open 11">
+            <img src="assets/ORA%20SOLANA%20EAST/thumbnails/11.jpg" alt="ORA-Solana East - 11" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20EAST/12.jpg" aria-label="Open 12">
+            <img src="assets/ORA%20SOLANA%20EAST/thumbnails/12.jpg" alt="ORA-Solana East - 12" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20EAST/13.JPG" aria-label="Open 13">
+            <img src="assets/ORA%20SOLANA%20EAST/thumbnails/13.jpg" alt="ORA-Solana East - 13" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20EAST/14.JPG" aria-label="Open 14">
+            <img src="assets/ORA%20SOLANA%20EAST/thumbnails/14.jpg" alt="ORA-Solana East - 14" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/ORA%20SOLANA%20EAST/15.JPG" aria-label="Open 15">
+            <img src="assets/ORA%20SOLANA%20EAST/thumbnails/15.jpg" alt="ORA-Solana East - 15" loading="lazy" decoding="async">
+          </button>
+        </div>
+      </div>
+      <span class="project-arrow">→</span>
+    </div>
+    <div class="project-row">
+      <span class="project-num">003</span>
+      <div>
         <div class="project-name">ORA ZED East — Multi-Cluster Landscape Package</div>
         <div class="project-type">Landscape Design · New Cairo, Egypt</div>
         <div class="project-gallery" aria-label="ORA ZED East gallery">
@@ -689,7 +871,39 @@
       <span class="project-arrow">→</span>
     </div>
     <div class="project-row">
-      <span class="project-num">002</span>
+      <span class="project-num">004</span>
+      <div>
+        <div class="project-name">SOMABAY - BLANCA & MAZEEJ Hotel</div>
+        <div class="project-type">Landscape Design · Somabay, Red Sea Coast, Egypt</div>
+        <div class="project-gallery" aria-label="SOMABAY Blanca and Mazeej Hotel gallery">
+          <button class="project-thumb" type="button" data-full="assets/SOMABAY%20-%20BLANCA%20%26%20MAZEEJ%20HOTEL/P.03.JPG" aria-label="Open P.03">
+            <img src="assets/SOMABAY%20-%20BLANCA%20%26%20MAZEEJ%20HOTEL/thumbnails/P.03.jpg" alt="SOMABAY Blanca and Mazeej Hotel - P.03" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/SOMABAY%20-%20BLANCA%20%26%20MAZEEJ%20HOTEL/P.04.jpg" aria-label="Open P.04">
+            <img src="assets/SOMABAY%20-%20BLANCA%20%26%20MAZEEJ%20HOTEL/thumbnails/P.04.jpg" alt="SOMABAY Blanca and Mazeej Hotel - P.04" loading="lazy" decoding="async">
+          </button>
+        </div>
+      </div>
+      <span class="project-arrow">→</span>
+    </div>
+    <div class="project-row">
+      <span class="project-num">005</span>
+      <div>
+        <div class="project-name">Al-Borouj Parcel 2.4</div>
+        <div class="project-type">Residential Landscape · Capital Group Properties</div>
+        <div class="project-gallery" aria-label="Al-Borouj Parcel 2.4 gallery">
+          <button class="project-thumb" type="button" data-full="assets/AL-BOUROUJ%20PARCEL%202.4/LANDSCAPE.jpg" aria-label="Open LANDSCAPE">
+            <img src="assets/AL-BOUROUJ%20PARCEL%202.4/thumbnails/LANDSCAPE.jpg" alt="Al-Borouj Parcel 2.4 - LANDSCAPE" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/AL-BOUROUJ%20PARCEL%202.4/PARCEL%202.4%20-Coloured%20Master%20Plan.jpg" aria-label="Open Coloured Master Plan">
+            <img src="assets/AL-BOUROUJ%20PARCEL%202.4/thumbnails/PARCEL%202.4%20-Coloured%20Master%20Plan.jpg" alt="Al-Borouj Parcel 2.4 - Coloured Master Plan" loading="lazy" decoding="async">
+          </button>
+        </div>
+      </div>
+      <span class="project-arrow">→</span>
+    </div>
+    <div class="project-row">
+      <span class="project-num">006</span>
       <div>
         <div class="project-name">New Suez Gate City Master Plan</div>
         <div class="project-type">Urban Planning · New Urban Communities Authority</div>
@@ -723,7 +937,23 @@
       <span class="project-arrow">→</span>
     </div>
     <div class="project-row">
-      <span class="project-num">003</span>
+      <span class="project-num">007</span>
+      <div>
+        <div class="project-name">Social Housing Phases — Capital Gardens & New Aswan</div>
+        <div class="project-type">Landscape Package · Gateway Urban Developments</div>
+      </div>
+      <span class="project-arrow">→</span>
+    </div>
+    <div class="project-row">
+      <span class="project-num">008</span>
+      <div>
+        <div class="project-name">Riyadh Panels & Facades Study</div>
+        <div class="project-type">Urban Design · Saudi Vision 2030</div>
+      </div>
+      <span class="project-arrow">→</span>
+    </div>
+    <div class="project-row">
+      <span class="project-num">009</span>
       <div>
         <div class="project-name">Mamsha Ahl-Masr — Nile Promenade</div>
         <div class="project-type">Construction Supervision · Cairo Waterfront</div>
@@ -751,31 +981,7 @@
       <span class="project-arrow">→</span>
     </div>
     <div class="project-row">
-      <span class="project-num">004</span>
-      <div>
-        <div class="project-name">Al-Borouj Parcel 2.4</div>
-        <div class="project-type">Residential Landscape · Capital Group Properties</div>
-        <div class="project-gallery" aria-label="Al-Borouj Parcel 2.4 gallery">
-          <button class="project-thumb" type="button" data-full="assets/AL-BOUROUJ%20PARCEL%202.4/LANDSCAPE.jpg" aria-label="Open LANDSCAPE">
-            <img src="assets/AL-BOUROUJ%20PARCEL%202.4/thumbnails/LANDSCAPE.jpg" alt="Al-Borouj Parcel 2.4 - LANDSCAPE" loading="lazy" decoding="async">
-          </button>
-          <button class="project-thumb" type="button" data-full="assets/AL-BOUROUJ%20PARCEL%202.4/PARCEL%202.4%20-Coloured%20Master%20Plan.jpg" aria-label="Open Coloured Master Plan">
-            <img src="assets/AL-BOUROUJ%20PARCEL%202.4/thumbnails/PARCEL%202.4%20-Coloured%20Master%20Plan.jpg" alt="Al-Borouj Parcel 2.4 - Coloured Master Plan" loading="lazy" decoding="async">
-          </button>
-        </div>
-      </div>
-      <span class="project-arrow">→</span>
-    </div>
-    <div class="project-row">
-      <span class="project-num">005</span>
-      <div>
-        <div class="project-name">Riyadh Panels & Facades Study</div>
-        <div class="project-type">Urban Design · Saudi Vision 2030</div>
-      </div>
-      <span class="project-arrow">→</span>
-    </div>
-    <div class="project-row">
-      <span class="project-num">006</span>
+      <span class="project-num">010</span>
       <div>
         <div class="project-name">GIS Vitality Assessment Tool — MSc Thesis</div>
         <div class="project-type">Academic Research · Cairo University</div>
@@ -783,18 +989,18 @@
       <span class="project-arrow">→</span>
     </div>
     <div class="project-row">
-      <span class="project-num">007</span>
-      <div>
-        <div class="project-name">Social Housing Phases — Capital Gardens & New Aswan</div>
-        <div class="project-type">Landscape Package · Gateway Urban Developments</div>
-      </div>
-      <span class="project-arrow">→</span>
-    </div>
-    <div class="project-row">
-      <span class="project-num">008+</span>
+      <span class="project-num">011+</span>
       <div>
         <div class="project-name">26+ Additional Projects across Egypt & Saudi Arabia</div>
         <div class="project-type">Parks · Cornishes · Heritage Sites · Medical Centres</div>
+        <div class="project-gallery" aria-label="Additional projects across Egypt and Saudi Arabia gallery">
+          <button class="project-thumb" type="button" data-full="assets/Additional%20Projects%20across%20Egypt%20%26%20Saudi%20Arabia/01.jpg" aria-label="Open 01">
+            <img src="assets/Additional%20Projects%20across%20Egypt%20%26%20Saudi%20Arabia/thumbnails/01.jpg" alt="Additional projects Egypt and Saudi Arabia - 01" loading="lazy" decoding="async">
+          </button>
+          <button class="project-thumb" type="button" data-full="assets/Additional%20Projects%20across%20Egypt%20%26%20Saudi%20Arabia/02.jpg" aria-label="Open 02">
+            <img src="assets/Additional%20Projects%20across%20Egypt%20%26%20Saudi%20Arabia/thumbnails/02.jpg" alt="Additional projects Egypt and Saudi Arabia - 02" loading="lazy" decoding="async">
+          </button>
+        </div>
       </div>
       <span class="project-arrow">→</span>
     </div>
@@ -814,7 +1020,7 @@
   <div class="contact-right reveal">
     <div class="contact-item">
       <span class="contact-label">Email</span>
-      <span class="contact-value">yahyagaber110@gmail.com</span>
+      <span class="contact-value">Yahyagaber110@gmail.com</span>
     </div>
     <div class="contact-item">
       <span class="contact-label">Phone</span>
@@ -822,7 +1028,7 @@
     </div>
     <div class="contact-item">
       <span class="contact-label">Institution</span>
-      <span class="contact-value">Cairo University · Faculty of Regional & Urban Planning</span>
+      <span class="contact-value">SCHADUF LANDSCAPE CONSULTANTS</span>
     </div>
     <div class="contact-item">
       <span class="contact-label">Location</span>
@@ -839,8 +1045,10 @@
 </footer>
 
 <div class="gallery-modal" id="galleryModal" aria-hidden="true">
-  <div class="gallery-modal-panel" role="dialog" aria-modal="true" aria-label="Image preview">
+  <div class="gallery-modal-panel" id="galleryModalPanel" role="dialog" aria-modal="true" aria-label="Image preview">
     <button class="gallery-modal-close" id="galleryModalClose" type="button" aria-label="Close">×</button>
+    <button class="gallery-modal-prev" id="galleryModalPrev" type="button" aria-label="Previous image" hidden>←</button>
+    <button class="gallery-modal-next" id="galleryModalNext" type="button" aria-label="Next image" hidden>→</button>
     <img id="galleryModalImg" src="" alt="">
   </div>
 </div>
@@ -859,8 +1067,8 @@
   });
 
   function animateCursor() {
-    ringX += (mouseX - ringX) * 0.16;
-    ringY += (mouseY - ringY) * 0.16;
+    ringX += (mouseX - ringX) * 0.075;
+    ringY += (mouseY - ringY) * 0.075;
     cursor.style.transform = `translate(${mouseX - 4}px, ${mouseY - 4}px)`;
     ring.style.transform = `translate(${ringX - 16}px, ${ringY - 16}px)`;
     requestAnimationFrame(animateCursor);
@@ -878,30 +1086,90 @@
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  // Gallery modal
+  // Image use: blocks default right-click / drag on <img> only (portfolio work). Not foolproof —
+  // network tab, cache, extensions, and screenshots can still capture assets.
+  document.addEventListener('contextmenu', (e) => {
+    if (e.target instanceof HTMLImageElement) e.preventDefault();
+  }, true);
+  document.addEventListener('dragstart', (e) => {
+    if (e.target instanceof HTMLImageElement) e.preventDefault();
+  }, true);
+  document.querySelectorAll('img').forEach((img) => { img.draggable = false; });
+
+  // Gallery modal (with prev/next within each project gallery)
   const galleryModal = document.getElementById('galleryModal');
+  const galleryModalPanel = document.getElementById('galleryModalPanel');
   const galleryModalImg = document.getElementById('galleryModalImg');
   const galleryModalClose = document.getElementById('galleryModalClose');
+  const galleryModalPrev = document.getElementById('galleryModalPrev');
+  const galleryModalNext = document.getElementById('galleryModalNext');
 
-  function openGallery(src, alt) {
-    galleryModalImg.src = src;
-    galleryModalImg.alt = alt || 'Gallery image';
+  let gallerySlides = [];
+  let galleryIndex = 0;
+
+  function renderGallerySlide() {
+    const item = gallerySlides[galleryIndex];
+    if (!item) return;
+    galleryModalImg.src = item.src;
+    galleryModalImg.alt = item.alt || 'Gallery image';
+    galleryModalImg.draggable = false;
+    const n = gallerySlides.length;
+    const showNav = n > 1;
+    galleryModalPrev.hidden = !showNav;
+    galleryModalNext.hidden = !showNav;
+    galleryModalPanel.setAttribute(
+      'aria-label',
+      showNav ? `Image ${galleryIndex + 1} of ${n}` : 'Image preview'
+    );
+  }
+
+  function galleryStep(delta) {
+    if (gallerySlides.length <= 1) return;
+    galleryIndex = (galleryIndex + delta + gallerySlides.length) % gallerySlides.length;
+    renderGallerySlide();
+  }
+
+  function openGalleryFromThumb(btn) {
+    const wrap = btn.closest('.project-gallery');
+    if (!wrap) return;
+    const thumbs = [...wrap.querySelectorAll('.project-thumb')];
+    const idx = thumbs.indexOf(btn);
+    if (idx < 0) return;
+    gallerySlides = thumbs.map(t => ({
+      src: t.getAttribute('data-full') || t.querySelector('img')?.getAttribute('src') || '',
+      alt: t.querySelector('img')?.getAttribute('alt') || ''
+    }));
+    galleryIndex = Math.max(0, thumbs.indexOf(btn));
+    renderGallerySlide();
     galleryModal.classList.add('open');
+    galleryModal.setAttribute('aria-hidden', 'false');
     ring.classList.add('force-expanded');
   }
 
   function closeGallery() {
     galleryModal.classList.remove('open');
+    galleryModal.setAttribute('aria-hidden', 'true');
     galleryModalImg.src = '';
+    gallerySlides = [];
+    galleryModalPrev.hidden = true;
+    galleryModalNext.hidden = true;
     ring.classList.remove('force-expanded');
   }
 
   document.querySelectorAll('.project-thumb').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const full = btn.getAttribute('data-full') || btn.querySelector('img')?.getAttribute('src');
-      const alt = btn.querySelector('img')?.getAttribute('alt') || '';
-      if (full) openGallery(full, alt);
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openGalleryFromThumb(btn);
     });
+  });
+
+  galleryModalPrev.addEventListener('click', (e) => {
+    e.stopPropagation();
+    galleryStep(-1);
+  });
+  galleryModalNext.addEventListener('click', (e) => {
+    e.stopPropagation();
+    galleryStep(1);
   });
 
   galleryModalClose.addEventListener('click', closeGallery);
@@ -909,7 +1177,19 @@
     if (e.target === galleryModal) closeGallery();
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && galleryModal.classList.contains('open')) closeGallery();
+    if (!galleryModal.classList.contains('open')) return;
+    if (e.key === 'Escape') {
+      closeGallery();
+      return;
+    }
+    if (gallerySlides.length > 1 && e.key === 'ArrowLeft') {
+      e.preventDefault();
+      galleryStep(-1);
+    }
+    if (gallerySlides.length > 1 && e.key === 'ArrowRight') {
+      e.preventDefault();
+      galleryStep(1);
+    }
   });
 </script>
 </body>
